@@ -1,5 +1,9 @@
 # nordic_nrf_mesh_faradine
 
+- This is a patched version of the [nrf_mesh_plugin](https://github.com/OZEO-DOOZ/nrf_mesh_plugin) which was created to implement bluetooth mesh capabilities in flutter. I created this repository to not rely on the personal [fork](https://github.com/JosephFaradine/nrf_mesh_plugin).
+- This repository also has a local copy of the Java [Android-nRF-Mesh-Library
+](https://github.com/JosephFaradine/Android-nRF-Mesh-Library) so that the [BCON Mobile App](https://github.com/FaradineSystems/BCON-Mobile-App)'s pubspec.yaml can depend directly on this repository instead of a local path or pub.dev package.
+
 A Flutter plugin to enable mesh network management and communication using Nordic Semiconductor's SDKs.
 # Features
 This plugin wraps both [IOS-nRF-Mesh-Library] and [Android-nRF-Mesh-Library] (Specifically [this fork](https://github.com/JosephFaradine/Android-nRF-Mesh-Library)) to provide a Dart-only API and has the following features :
