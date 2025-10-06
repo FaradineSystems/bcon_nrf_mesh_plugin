@@ -6,6 +6,11 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:nordic_nrf_mesh_faradine/nordic_nrf_mesh_faradine.dart';
 import 'package:nordic_nrf_mesh_faradine/src/ble/ble_scanner.dart';
 
+// OOB provisioning action constants from Android-nRF-Mesh-Library\mesh\src\main\java\no\nordicsemi\android\mesh\utils\OutputOOBAction.java
+const int NO_OUTPUT = 0x0000;
+const int OUTPUT_NUMERIC = 0x0008;
+const int OUTPUT_ALPHA_NUMERIC = 0x0010;
+
 /// {@template provisioning_events}
 /// A class that may be used to listen to provisioning progress.
 ///
@@ -69,9 +74,9 @@ StreamSubscription? _onDataSentSubscription;
 /// {@macro provisioning}
 Future<ProvisionedMeshNode> provisioning(MeshManagerApi meshManagerApi, BleMeshManager bleMeshManager,
     BleScanner bleScanner, DiscoveredDevice device, String serviceDataUuid,
-    {ProvisioningEvent? events}) async {
+    {ProvisioningEvent? events, int outputOOBAction = 0}) async {
   if (Platform.isIOS || Platform.isAndroid) {
-    return _provisioning(meshManagerApi, bleMeshManager, bleScanner, device, serviceDataUuid, events);
+    return _provisioning(meshManagerApi, bleMeshManager, bleScanner, device, serviceDataUuid, events, outputOOBAction);
   } else {
     throw UnsupportedError('Platform ${Platform.operatingSystem} is not supported');
   }
@@ -79,12 +84,14 @@ Future<ProvisionedMeshNode> provisioning(MeshManagerApi meshManagerApi, BleMeshM
 
 /// {@macro provisioning}
 Future<ProvisionedMeshNode> _provisioning(
-    MeshManagerApi meshManagerApi,
-    BleMeshManager bleMeshManager,
-    BleScanner bleScanner,
-    DiscoveredDevice deviceToProvision,
-    String serviceDataUuid,
-    ProvisioningEvent? events) async {
+  MeshManagerApi meshManagerApi,
+  BleMeshManager bleMeshManager,
+  BleScanner bleScanner,
+  DiscoveredDevice deviceToProvision,
+  String serviceDataUuid,
+  ProvisioningEvent? events,
+  int outputOOBAction,
+) async {
   if (meshManagerApi.meshNetwork == null) {
     throw NrfMeshProvisioningException(ProvisioningFailureCode.meshConfiguration,
         'You need to load a meshNetwork before being able to provision a device');
@@ -185,7 +192,13 @@ Future<ProvisionedMeshNode> _provisioning(
         _log('successfully assigned $unicast to node !');
       }
       events?._provisioningController.add(deviceToProvision);
-      await meshManagerApi.provisioning(unprovisionedMeshNode);
+
+      // Provision with or without authentication depending on output OOB Action variable
+      if (outputOOBAction == OUTPUT_NUMERIC) {
+        await meshManagerApi.provisioningWithOutputOOBNumeric(unprovisionedMeshNode);
+      } else {
+        await meshManagerApi.provisioning(unprovisionedMeshNode);
+      }
     } else if (event.state == 'PROVISIONING_INVITE') {
       if (!bleMeshManager.isProvisioningCompleted) {
         events?._provisioningInvitationController.add(deviceToProvision);

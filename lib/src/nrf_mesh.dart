@@ -47,10 +47,10 @@ class NordicNrfMesh {
     final BleMeshManager bleMeshManager,
     final DiscoveredDevice device,
     final String serviceDataUuid, {
-    final utils_provisioning.ProvisioningEvent? events,
+    final utils_provisioning.ProvisioningEvent? events, int outputOOBAction = 0
   }) =>
       utils_provisioning.provisioning(meshManagerApi, bleMeshManager, _bleScanner, device, serviceDataUuid,
-          events: events);
+          events: events, outputOOBAction: outputOOBAction);
 
   // Identify only function following the framework of above provisioning function
   Future<void> identify(

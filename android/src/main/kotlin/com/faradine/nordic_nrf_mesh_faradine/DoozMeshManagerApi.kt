@@ -11,6 +11,7 @@ import io.flutter.plugin.common.MethodChannel
 import no.nordicsemi.android.mesh.MeshManagerApi
 import no.nordicsemi.android.mesh.MeshNetwork
 import no.nordicsemi.android.mesh.transport.*
+import no.nordicsemi.android.mesh.utils.OutputOOBAction
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -562,6 +563,23 @@ class DoozMeshManagerApi(context: Context, binaryMessenger: BinaryMessenger) : S
                     return
                 }
                 mMeshManagerApi.startProvisioning(unProvisionedMeshNode.meshNode)
+                result.success(null)
+            }
+            "provisioningWithOutputOOBNumeric" -> {
+                val uuid = UUID.fromString(call.argument("uuid")!!)
+                val unProvisionedMeshNode = unProvisionedMeshNodes.firstOrNull { it.meshNode.deviceUuid == uuid }
+                if (unProvisionedMeshNode == null) {
+                    result.error("NOT_FOUND", "MeshNode with uuid $uuid doesn't exist", null)
+                    return
+                }
+                // OOB provisioning action constants from Android-nRF-Mesh-Library\mesh\src\main\java\no\nordicsemi\android\mesh\utils\OutputOOBAction.java
+                mMeshManagerApi.startProvisioningWithOutputOOB(unProvisionedMeshNode.meshNode, OutputOOBAction.OUTPUT_NUMERIC)
+                result.success(null)
+            }
+            "setProvisioningAuthentication"-> {
+                val authentication = call.argument<String>("authentication")!!
+
+                mMeshManagerApi.setProvisioningAuthentication(authentication)
                 result.success(null)
             }
             "cachedProvisionedMeshNodeUuid" -> {

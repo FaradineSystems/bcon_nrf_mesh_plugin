@@ -1135,6 +1135,12 @@ class MeshManagerApi {
   Future<void> provisioning(UnprovisionedMeshNode meshNode) =>
       _methodChannel.invokeMethod('provisioning', meshNode.toJson());
 
+  Future<void> provisioningWithOutputOOBNumeric(UnprovisionedMeshNode meshNode) =>
+      _methodChannel.invokeMethod('provisioningWithOutputOOBNumeric', meshNode.toJson());
+
+  Future<void> setProvisioningAuthentication(String authentication) =>
+      _methodChannel.invokeMethod('setProvisioningAuthentication', {'authentication': authentication});
+
   /// {@macro deprovision}
   Future<ConfigNodeResetStatus> deprovision(ProvisionedMeshNode meshNode) async {
     if (Platform.isIOS || Platform.isAndroid) {
