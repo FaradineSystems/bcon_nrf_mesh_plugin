@@ -7,7 +7,7 @@ import 'package:nordic_nrf_mesh_faradine/nordic_nrf_mesh_faradine.dart';
 import 'package:nordic_nrf_mesh_faradine/src/ble/ble_scanner.dart';
 
 // OOB provisioning action constants from Android-nRF-Mesh-Library\mesh\src\main\java\no\nordicsemi\android\mesh\utils\OutputOOBAction.java
-const int NO_OUTPUT = 0x0000;
+const int OUTPUT_NONE = 0x0000;
 const int OUTPUT_NUMERIC = 0x0008;
 const int OUTPUT_ALPHA_NUMERIC = 0x0010;
 
@@ -328,7 +328,8 @@ Future<void> _identify(MeshManagerApi meshManagerApi, BleMeshManager bleMeshMana
   });
 
   // this completer will help providing a Future that corresponds to the process ending
-  final completer = Completer();
+  final cancelCompleter = Completer();
+  final identifyCompleter = Completer<void>();
   // when this bool is false, it will notify errors via _onGattErrorSubscription
   late bool isHandlingConnectErrors;
 
@@ -345,28 +346,28 @@ Future<void> _identify(MeshManagerApi meshManagerApi, BleMeshManager bleMeshMana
       debugPrint("Identify not supported on iOS");
     } else {
       await meshManagerApi.identifyNodeWithTimer(serviceDataUuid, attentionTimer);
+      // await Future.delayed(Duration(milliseconds: attentionTimer));
+      await identifyCompleter.future; // Wait for confirm that PDU was sent
       await cancelProvisioning(meshManagerApi, bleScanner, bleMeshManager);
-      completer.complete(true);
+      cancelCompleter.complete(true);
     }
   });
 
   // handle sending PDUs
   // This sends the PDU that asks the mesh device to identify itself
+  // Only one pdu comes through this subscription
   _sendProvisioningPduSubscription = meshManagerApi.sendProvisioningPdu.listen((event) async {
     await bleMeshManager.sendPdu(event.pdu);
   });
 
   if (Platform.isAndroid) {
     // on Android need to call Nordic Semiconductor's library to handle sent data parsing
+    // Only one event comes through this subscription
     _onDataSentSubscription = bleMeshManager.callbacks!.onDataSent.listen((event) async {
       await meshManagerApi.handleWriteCallbacks(event.mtu, event.pdu);
+      if (!identifyCompleter.isCompleted) identifyCompleter.complete();
     });
   }
-
-  // handle received data parsing
-  // _onDataReceivedSubscription = bleMeshManager.callbacks!.onDataReceived.listen((event) async {
-  //   await meshManagerApi.handleNotifications(event.mtu, event.pdu);
-  // });
 
   // will notify call and stop process in case of unexpected GATT error
   _onGattErrorSubscription = bleMeshManager.callbacks!.onError.listen((event) {
@@ -374,8 +375,8 @@ Future<void> _identify(MeshManagerApi meshManagerApi, BleMeshManager bleMeshMana
     if (!isHandlingConnectErrors) {
       // if not in a connection phase where auto retry are implemented, we should notify gatt errors
       events?._provisioningGattErrorController.add(event);
-      if (!completer.isCompleted) {
-        completer.completeError(
+      if (!cancelCompleter.isCompleted) {
+        cancelCompleter.completeError(
           NrfMeshProvisioningException(
             ProvisioningFailureCode.unexpectedGattError,
             'received a gatt error event outside connection phases',
@@ -396,7 +397,7 @@ Future<void> _identify(MeshManagerApi meshManagerApi, BleMeshManager bleMeshMana
     isHandlingConnectErrors = false;
 
     // wait for listeners to do their job
-    await completer.future;
+    await cancelCompleter.future;
 
     // cleanup resources
     // await meshManagerApi.cleanProvisioningData();

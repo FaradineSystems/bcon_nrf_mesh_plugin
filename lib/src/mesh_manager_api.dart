@@ -479,10 +479,12 @@ class MeshManagerApi {
         {'serviceUuid': serviceUuid},
       );
 
-  Future<void> identifyNodeWithTimer(String serviceUuid, int attentionTimer) => _methodChannel.invokeMethod<void>(
-        'identifyNodeWithTimer',
-        {'serviceUuid': serviceUuid, 'attentionTimer': attentionTimer},
-      );
+  Future<void> identifyNodeWithTimer(String serviceUuid, int attentionTimer) async {
+    await _methodChannel.invokeMethod<void>(
+      'identifyNodeWithTimer',
+      {'serviceUuid': serviceUuid, 'attentionTimer': attentionTimer},
+    );
+  }
 
   /// This method reset the unprovisioned nodes cache.
   ///
