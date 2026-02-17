@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '12.0'
+platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -32,7 +32,7 @@ target 'Runner' do
   use_modular_headers!
   #using static library linkage (to be able to use nRFMeshProvision when it is a git submodule of nrf_mesh_plugin)
   use_frameworks! :linkage => :static
-  pod 'nRFMeshProvision', :path => '.symlinks/plugins/nordic_nrf_mesh/IOS-nRF-Mesh-Library'
+  pod 'nRFMeshProvision', :path => '.symlinks/plugins/nordic_nrf_mesh_faradine/IOS-nRF-Mesh-Library'
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
@@ -40,9 +40,9 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
-        '$(inherited)',
-        'PERMISSION_BLUETOOTH=1',
+        '$(inherited)'
       ]
     end
   end

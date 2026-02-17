@@ -101,7 +101,7 @@ class _BconDemoScreenState extends State<BconDemoScreen> {
         ),
         labelMedium: const TextStyle(color: Colors.white, fontSize: 16),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.grey[200],
         elevation: 4,
         shape: RoundedRectangleBorder(
