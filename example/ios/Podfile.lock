@@ -1,5 +1,5 @@
 PODS:
-  - CryptoSwift (1.5.1)
+  - CryptoSwift (1.8.4)
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.9):
@@ -46,7 +46,7 @@ PODS:
     - Flutter
     - nRFMeshProvision
   - nRFMeshProvision (3.2.0):
-    - CryptoSwift (= 1.5.1)
+    - CryptoSwift (= 1.8.4)
   - permission_handler_apple (9.1.1):
     - Flutter
   - Protobuf (3.29.6)
@@ -58,7 +58,7 @@ PODS:
   - SDWebImage (5.21.6):
     - SDWebImage/Core (= 5.21.6)
   - SDWebImage/Core (5.21.6)
-  - SwiftProtobuf (1.34.1)
+  - SwiftProtobuf (1.35.0)
   - SwiftyGif (5.4.5)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -108,7 +108,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  CryptoSwift: c4f2debceb38bf44c80659afe009f71e23e4a082
+  CryptoSwift: e64e11850ede528a02a0f3e768cec8e9d92ecb90
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
@@ -117,15 +117,15 @@ SPEC CHECKSUMS:
   flutter_compass: cbbd285cea1584c7ac9c4e0c3e1f17cbea55e855
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
   nordic_nrf_mesh_faradine: 9d1eb23803f4151e908f3700b3968532b2035df6
-  nRFMeshProvision: 92cedd0ce3cd8890d5bb4a842e85ad5b73789007
+  nRFMeshProvision: 922013ea825ac80f277cd0a002251373ecfe200d
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   Protobuf: 8d5596f7468be5400861a6bbfb2dfe9d0d1cde34
   reactive_ble_mobile: 856183aeda09f2a676bbaecbea8915c3cb1d33df
   SDWebImage: 1bb6a1b84b6fe87b972a102bdc77dd589df33477
-  SwiftProtobuf: c901f00a3e125dc33cac9b16824da85682ee47da
+  SwiftProtobuf: 24536165ff31bd2bd1aa8ad9307a128dc0a06dd0
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
 
-PODFILE CHECKSUM: 99f9117d36a4369ae9d5c87bee6f0a2e0075ee84
+PODFILE CHECKSUM: a3a690f79b62f88e816657a9ccbf17850fb02fa1
 
 COCOAPODS: 1.16.2

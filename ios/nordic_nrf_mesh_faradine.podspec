@@ -15,17 +15,11 @@ A Flutter plugin to enable mesh network management and communication using Nordi
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'CryptoSwift', '= 1.5.1'
-  
-  # Include nRFMeshProvision source files directly
-  s.preserve_paths = '../IOS-nRF-Mesh-Library/**/*'
-  s.source_files = ['Classes/**/*', '../IOS-nRF-Mesh-Library/nRFMeshProvision/Classes/**/*']
+  s.dependency 'nRFMeshProvision'
 
   s.platform = :ios, '16.0'
-  s.static_framework = true
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
-  s.frameworks = 'CoreBluetooth'
 end
