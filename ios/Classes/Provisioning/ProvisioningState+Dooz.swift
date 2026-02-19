@@ -14,7 +14,7 @@ extension ProvisioningState{
         
         case .complete:
             return ProvisioningEvent.onProvisioningCompleted.rawValue
-        case .fail(_):
+        case .failed:
             return ProvisioningEvent.onProvisioningFailed.rawValue
         default:
             return ProvisioningEvent.onProvisioningStateChanged.rawValue

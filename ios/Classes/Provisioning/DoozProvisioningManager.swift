@@ -175,23 +175,24 @@ extension DoozProvisioningManager: ProvisioningDelegate{
 
 extension DoozProvisioningManager: BearerDelegate{
     func bearerDidOpen(_ bearer: Bearer) {
-        
-        if bearer is DoozPBGattBearer{
-            if let _provisioningManager = self.provisioningManager{
+    
+        if bearer is DoozPBGattBearer {
+            if let _provisioningManager = self.provisioningManager {
                 _provisioningManager.delegate = self
                 let attentionTimer: UInt8 = 5
                 
-                do{
+                do {
                     try _provisioningManager.identify(andAttractFor: attentionTimer)
+                } catch {
+                    do {
+                        try bearer.close()
+                    } catch {
+                        print("Error closing bearer: \(error)")
+                    }
+                    print("Error during identify: \(error)")
                 }
-                catch{
-                    bearer.close()
-                    print(error)
-                }
-                
             }
         }
-        
     }
     
     func bearer(_ bearer: Bearer, didClose error: Error?) {

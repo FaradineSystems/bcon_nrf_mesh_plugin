@@ -37,7 +37,7 @@ class GenericLevelClientDelegate: ModelDelegate {
     var publicationMessageComposer: MessageComposer?
 
     init() {
-        let types: [GenericMessage.Type] = [
+        let types: [StaticMeshMessage.Type] = [
             GenericLevelStatus.self,
             MagicLevelSetStatus.self,
             MagicLevelGetStatus.self,
@@ -48,19 +48,19 @@ class GenericLevelClientDelegate: ModelDelegate {
     
     // MARK: - Message handlers
     
-    func model(_ model: Model, didReceiveAcknowledgedMessage request: AcknowledgedMeshMessage,
-               from source: Address, sentTo destination: MeshAddress) -> MeshMessage {
+    func model(_ model: Model, didReceiveAcknowledgedMessage request: any AcknowledgedMeshMessage,
+               from source: Address, sentTo destination: MeshAddress) throws -> any MeshResponse {
         fatalError("Not possible")
     }
     
-    func model(_ model: Model, didReceiveUnacknowledgedMessage message: MeshMessage,
+    func model(_ model: Model, didReceiveUnacknowledgedMessage message: any UnacknowledgedMeshMessage,
                from source: Address, sentTo destination: MeshAddress) {
         // The status message may be received here if the Generic Level Server model
         // has been configured to publish. Ignore this message.
     }
     
-    func model(_ model: Model, didReceiveResponse response: MeshMessage,
-               toAcknowledgedMessage request: AcknowledgedMeshMessage,
+    func model(_ model: Model, didReceiveResponse response: any MeshResponse,
+               toAcknowledgedMessage request: any AcknowledgedMeshMessage,
                from source: Address){
         // Ignore.
     }

@@ -10,8 +10,11 @@ import nRFMeshProvision
 
 extension DoozMeshManagerApi: MeshNetworkDelegate{
     
-    func meshNetworkManager(_ manager: MeshNetworkManager, didReceiveMessage message: MeshMessage, sentFrom source: Address, to destination: Address) {
-        print("📣 didReceiveMessage : \(message) from \(source) to \(destination)")
+    func meshNetworkManager(_ manager: MeshNetworkManager, didReceiveMessage message: MeshMessage, sentFrom source: Address, to destination: MeshAddress) {
+        // Convert MeshAddress to Address for backward compatibility
+        let destinationAddress = destination.address
+        
+        print("📣 didReceiveMessage : \(message) from \(source) to \(destinationAddress)")
         // Handle the message based on its type.
         switch message {
         case let status as ConfigModelAppStatus:
@@ -33,7 +36,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.source.rawValue : source,
                 EventSinkKeys.message.meshMessage.rawValue : [
                     EventSinkKeys.message.source.rawValue : source,
-                    EventSinkKeys.message.destination.rawValue : destination
+                    EventSinkKeys.message.destination.rawValue : destinationAddress
                 ]
             ]
             _sendFlutterMessage(message)
@@ -44,7 +47,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                     EventSinkKeys.source.rawValue : source,
                     EventSinkKeys.message.meshMessage.rawValue : [
                         EventSinkKeys.message.source.rawValue : source,
-                        EventSinkKeys.message.destination.rawValue : destination
+                        EventSinkKeys.message.destination.rawValue : destinationAddress
                     ]
                 ]
                 _sendFlutterMessage(message)
@@ -57,7 +60,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.level.rawValue : status.level,
                 EventSinkKeys.message.targetLevel.rawValue : status.targetLevel ?? 0,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.transitionResolution.rawValue : status.remainingTime?.stepResolution.rawValue ?? 0,
                 EventSinkKeys.message.transitionSteps.rawValue : status.remainingTime?.steps ?? 0,
             ]
@@ -76,7 +79,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
             let message: FlutterMessage = [
                 EventSinkKeys.eventName.rawValue : MessageEvent.onConfigModelSubscriptionStatus.rawValue,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.elementAddress.rawValue: status.elementAddress,
                 EventSinkKeys.message.subscriptionAddress.rawValue : status.address,
                 EventSinkKeys.message.modelIdentifier.rawValue : status.modelIdentifier,
@@ -105,7 +108,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.presentLightness.rawValue : status.lightness,
                 EventSinkKeys.message.targetLightness.rawValue : status.targetLightness ?? 0,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.transitionResolution.rawValue : status.remainingTime?.stepResolution.rawValue ?? 0,
                 EventSinkKeys.message.transitionSteps.rawValue : status.remainingTime?.steps ?? 0,
             ]
@@ -118,7 +121,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.presentTemperature.rawValue : status.temperature,
                 EventSinkKeys.message.targetTemperature.rawValue : status.targetTemperature ?? 0,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.transitionResolution.rawValue : status.remainingTime?.stepResolution.rawValue ?? 0,
                 EventSinkKeys.message.transitionSteps.rawValue : status.remainingTime?.steps ?? 0,
             ]
@@ -130,7 +133,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.presentHue.rawValue : status.hue,
                 EventSinkKeys.message.presentSaturation.rawValue : status.saturation,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.transitionResolution.rawValue : status.remainingTime?.stepResolution.rawValue ?? 0,
                 EventSinkKeys.message.transitionSteps.rawValue : status.remainingTime?.steps ?? 0,
             ]
@@ -139,7 +142,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
             let message: FlutterMessage = [
                 EventSinkKeys.eventName.rawValue : MessageEvent.onConfigNodeResetStatus.rawValue,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.success.rawValue : true,
             ]
             _sendFlutterMessage(message)
@@ -147,7 +150,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
             let message: FlutterMessage = [
                 EventSinkKeys.eventName.rawValue : MessageEvent.onConfigNetworkTransmitStatus.rawValue,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.transmitCount.rawValue : status.count,
                 EventSinkKeys.message.transmitIntervalSteps.rawValue : status.steps,
                 
@@ -157,7 +160,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
             let message: FlutterMessage = [
                 EventSinkKeys.eventName.rawValue : MessageEvent.onConfigDefaultTtlStatus.rawValue,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.ttl.rawValue : status.ttl,
             ]
             _sendFlutterMessage(message)
@@ -165,7 +168,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
             let message: FlutterMessage = [
                 EventSinkKeys.eventName.rawValue : MessageEvent.onConfigBeaconStatus.rawValue,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
                 EventSinkKeys.message.enable.rawValue : status.isEnabled,
             ]
             _sendFlutterMessage(message)
@@ -177,7 +180,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.value.rawValue : status.mValue,
                 EventSinkKeys.message.correlation.rawValue : status.mCorrelation,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
             ]
             _sendFlutterMessage(message)
         case let status as MagicLevelGetStatus:
@@ -188,7 +191,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.value.rawValue : status.mValue,
                 EventSinkKeys.message.correlation.rawValue : status.mCorrelation,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
             ]
             _sendFlutterMessage(message)
         case let status as DoozEpochStatus:
@@ -199,7 +202,7 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.correlation.rawValue : status.mCorrelation,
                 EventSinkKeys.message.extra.rawValue : status.mExtra ?? 0,
                 EventSinkKeys.source.rawValue : source,
-                EventSinkKeys.message.destination.rawValue : destination,
+                EventSinkKeys.message.destination.rawValue : destinationAddress,
             ]
             _sendFlutterMessage(message)
         default:
@@ -208,12 +211,12 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
         delegate?.onNetworkUpdated(manager.meshNetwork!)
     }
     
-    func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: Address) {
-        print("📣 didSendMessage : \(message) from \(localElement) to \(destination)")
+    func meshNetworkManager(_ manager: MeshNetworkManager, didSendMessage message: MeshMessage, from localElement: Element, to destination: MeshAddress) {
+        print("📣 didSendMessage : \(message) from \(localElement) to \(destination.address)")
     }
     
-    func meshNetworkManager(_ manager: MeshNetworkManager, failedToSendMessage message: MeshMessage, from localElement: Element, to destination: Address, error: Error) {
-        print("📣 failedToSendMessage : \(message) from \(localElement) to \(destination) : \(error)")
+    func meshNetworkManager(_ manager: MeshNetworkManager, failedToSendMessage message: MeshMessage, from localElement: Element, to destination: MeshAddress, error: Error) {
+        print("📣 failedToSendMessage : \(message) from \(localElement) to \(destination.address) : \(error)")
     }
     
 }

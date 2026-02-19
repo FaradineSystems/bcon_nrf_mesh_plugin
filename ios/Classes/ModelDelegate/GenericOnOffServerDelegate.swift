@@ -66,7 +66,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
     private var observer: ((GenericState<Bool>) -> ())?
     
     init() {
-        let types: [GenericMessage.Type] = [
+        let types: [StaticMeshMessage.Type] = [
             GenericOnOffGet.self,
             GenericOnOffSet.self,
             GenericOnOffSetUnacknowledged.self
@@ -76,8 +76,8 @@ class GenericOnOffServerDelegate: ModelDelegate {
     
     // MARK: - Message handlers
     
-    func model(_ model: Model, didReceiveAcknowledgedMessage request: AcknowledgedMeshMessage,
-               from source: Address, sentTo destination: MeshAddress) -> MeshMessage {
+    func model(_ model: Model, didReceiveAcknowledgedMessage request: any AcknowledgedMeshMessage,
+               from source: Address, sentTo destination: MeshAddress) -> any MeshResponse {
         switch request {
         case let request as GenericOnOffSet:
         // Ignore a repeated request (with the same TID) from the same source
@@ -94,7 +94,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Bool>(transitionFrom: state, to: request.isOn,
                                            delay: TimeInterval(delay) * 0.005,
-                                           duration: transitionTime.interval)
+                                           duration: transitionTime.interval ?? 0)
             } else {
                 state = GenericState<Bool>(request.isOn)
             }
@@ -114,7 +114,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
         }
     }
     
-    func model(_ model: Model, didReceiveUnacknowledgedMessage message: MeshMessage,
+    func model(_ model: Model, didReceiveUnacknowledgedMessage message: any UnacknowledgedMeshMessage,
                from source: Address, sentTo destination: MeshAddress) {
         switch message {
         case let request as GenericOnOffSetUnacknowledged:
@@ -132,7 +132,7 @@ class GenericOnOffServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Bool>(transitionFrom: state, to: request.isOn,
                                            delay: TimeInterval(delay) * 0.005,
-                                           duration: transitionTime.interval)
+                                           duration: transitionTime.interval ?? 0)
             } else {
                 state = GenericState<Bool>(request.isOn)
             }
@@ -143,8 +143,8 @@ class GenericOnOffServerDelegate: ModelDelegate {
         }
     }
     
-    func model(_ model: Model, didReceiveResponse response: MeshMessage,
-               toAcknowledgedMessage request: AcknowledgedMeshMessage,
+    func model(_ model: Model, didReceiveResponse response: any MeshResponse,
+               toAcknowledgedMessage request: any AcknowledgedMeshMessage,
                from source: Address) {
         // Not possible.
     }

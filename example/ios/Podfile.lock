@@ -45,7 +45,7 @@ PODS:
   - nordic_nrf_mesh_faradine (0.16.0):
     - Flutter
     - nRFMeshProvision
-  - nRFMeshProvision (3.2.0):
+  - nRFMeshProvision (4.7.0):
     - CryptoSwift (= 1.8.4)
   - permission_handler_apple (9.1.1):
     - Flutter
@@ -70,7 +70,7 @@ DEPENDENCIES:
   - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - nordic_nrf_mesh_faradine (from `.symlinks/plugins/nordic_nrf_mesh_faradine/ios`)
-  - nRFMeshProvision (from `.symlinks/plugins/nordic_nrf_mesh_faradine/IOS-nRF-Mesh-Library`)
+  - nRFMeshProvision (from `https://github.com/FaradineSystems/IOS-nRF-Mesh-Library-Updated.git`, branch `main`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - reactive_ble_mobile (from `.symlinks/plugins/reactive_ble_mobile/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -99,13 +99,19 @@ EXTERNAL SOURCES:
   nordic_nrf_mesh_faradine:
     :path: ".symlinks/plugins/nordic_nrf_mesh_faradine/ios"
   nRFMeshProvision:
-    :path: ".symlinks/plugins/nordic_nrf_mesh_faradine/IOS-nRF-Mesh-Library"
+    :branch: main
+    :git: https://github.com/FaradineSystems/IOS-nRF-Mesh-Library-Updated.git
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   reactive_ble_mobile:
     :path: ".symlinks/plugins/reactive_ble_mobile/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+
+CHECKOUT OPTIONS:
+  nRFMeshProvision:
+    :commit: b6adf27d6b83dce0f685d0745be78552595d927a
+    :git: https://github.com/FaradineSystems/IOS-nRF-Mesh-Library-Updated.git
 
 SPEC CHECKSUMS:
   CryptoSwift: e64e11850ede528a02a0f3e768cec8e9d92ecb90
@@ -116,8 +122,8 @@ SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_compass: cbbd285cea1584c7ac9c4e0c3e1f17cbea55e855
   geolocator_apple: 66b711889fd333205763b83c9dcf0a57a28c7afd
-  nordic_nrf_mesh_faradine: 9d1eb23803f4151e908f3700b3968532b2035df6
-  nRFMeshProvision: 922013ea825ac80f277cd0a002251373ecfe200d
+  nordic_nrf_mesh_faradine: 2665bf7c219fd44f441f934d706c0a90516bc4dd
+  nRFMeshProvision: 07bb5481be308056d48050a9eaa6c34c93fe32a2
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   Protobuf: 8d5596f7468be5400861a6bbfb2dfe9d0d1cde34
   reactive_ble_mobile: 856183aeda09f2a676bbaecbea8915c3cb1d33df
@@ -126,6 +132,6 @@ SPEC CHECKSUMS:
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
 
-PODFILE CHECKSUM: a3a690f79b62f88e816657a9ccbf17850fb02fa1
+PODFILE CHECKSUM: a4d8ba91f65c1bafac6a366502ce5df47c79d617
 
 COCOAPODS: 1.16.2

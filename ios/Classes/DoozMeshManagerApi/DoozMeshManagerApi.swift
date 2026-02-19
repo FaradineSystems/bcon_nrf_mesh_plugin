@@ -31,12 +31,17 @@ class DoozMeshManagerApi: NSObject{
         self.doozStorage = LocalStorage(fileName: DoozStorage.fileName)
         
         self.meshNetworkManager = MeshNetworkManager(using: doozStorage)
-        self.meshNetworkManager.acknowledgmentTimerInterval = 0.150
-        self.meshNetworkManager.transmissionTimerInterval = 0.600
-        self.meshNetworkManager.incompleteMessageTimeout = 10.0
-        self.meshNetworkManager.retransmissionLimit = 2
-        self.meshNetworkManager.acknowledgmentMessageInterval = 4.2
-        self.meshNetworkManager.acknowledgmentMessageTimeout = 40.0
+        
+        // Configure network parameters using the builder pattern
+        self.meshNetworkManager.networkParameters = .basic { config in
+            config.setDefaultTtl(5)
+            config.discardIncompleteSegmentedMessages(after: 10.0)
+            config.transmitSegmentAcknowledgmentMessage(
+                usingSegmentReceptionInterval: 0.150,
+                multipliedByMinimumDelayIncrement: 1.5
+            )
+        }
+        
         self.meshNetworkManager.transmitter = doozTransmitter
         
         self.doozProvisioningManager = DoozProvisioningManager(meshNetworkManager: meshNetworkManager, messenger: messenger)
@@ -270,16 +275,16 @@ private extension DoozMeshManagerApi {
                 let element = node.element(withAddress: Address(exactly: data.elementAddress)!),
                 let model = element.model(withModelId: UInt32(data.modelIdentifier)){
 
-                let message: ConfigMessage =
+                let message: AcknowledgedConfigMessage =
                     ConfigModelSubscriptionAdd(group: group, to: model) ??
                     ConfigModelSubscriptionVirtualAddressAdd(group: group, to: model)!
-                
-                do{
-                    _ = try meshNetworkManager.send(message, to: node)
-                    result(true)
-                }catch{
-                    let nsError = error as NSError
-                    result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
+
+                Task {
+                    do {
+                        _ = try await meshNetworkManager.send(message, to: node)
+                    } catch {
+                        print("Error sending subscription add: \(error)")
+                    }
                 }
             }
             break
@@ -291,16 +296,16 @@ private extension DoozMeshManagerApi {
                 let element = node.element(withAddress: Address(exactly: data.elementAddress)!),
                 let model = element.model(withModelId: UInt32(data.modelIdentifier)){
                 
-                let message: ConfigMessage =
+                let message: AcknowledgedConfigMessage =
                     ConfigModelSubscriptionDelete(group: group, from: model) ??
                     ConfigModelSubscriptionVirtualAddressDelete(group: group, from: model)!
-                
-                do{
-                    _ = try meshNetworkManager.send(message, to: node)
-                    result(true)
-                }catch{
-                    let nsError = error as NSError
-                    result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
+
+                Task {
+                    do {
+                        _ = try await meshNetworkManager.send(message, to: node)
+                    } catch {
+                        print("Error sending subscription delete: \(error)")
+                    }
                 }
             }
             break
@@ -450,13 +455,14 @@ private extension DoozMeshManagerApi {
                 let element = node.element(withAddress: Address(exactly: data.elementAddress)!),
                 let model = element.model(withModelId: UInt32(data.modelIdentifier)){
                 
-                let message: ConfigMessage = ConfigModelSubscriptionDeleteAll(from: model)!
-                do {
-                    _ = try meshNetworkManager.send(message, to: node)
-                    result(nil)
-                } catch {
-                    let nsError = error as NSError
-                    result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
+                let message: AcknowledgedConfigMessage = ConfigModelSubscriptionDeleteAll(from: model)!
+
+                Task {
+                    do {
+                        _ = try await meshNetworkManager.send(message, to: node)
+                    } catch {
+                        print("Error sending subscription delete all: \(error)")
+                    }
                 }
             }
             break

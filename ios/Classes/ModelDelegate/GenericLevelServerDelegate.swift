@@ -66,7 +66,7 @@ class GenericLevelServerDelegate: ModelDelegate {
     private var observer: ((GenericState<Int16>) -> ())?
     
     init() {
-        let types: [GenericMessage.Type] = [
+        let types: [StaticMeshMessage.Type] = [
             GenericLevelGet.self,
             GenericLevelSet.self,
             GenericLevelSetUnacknowledged.self,
@@ -83,8 +83,8 @@ class GenericLevelServerDelegate: ModelDelegate {
     
     // MARK: - Message handlers
     
-    func model(_ model: Model, didReceiveAcknowledgedMessage request: AcknowledgedMeshMessage,
-               from source: Address, sentTo destination: MeshAddress) -> MeshMessage {
+    func model(_ model: Model, didReceiveAcknowledgedMessage request: any AcknowledgedMeshMessage,
+               from source: Address, sentTo destination: MeshAddress) -> any MeshResponse {
         switch request {
         case let request as GenericLevelSet:
             // Ignore a repeated request (with the same TID) from the same source
@@ -101,7 +101,7 @@ class GenericLevelServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Int16>(transitionFrom: state, to: request.level,
                                             delay: TimeInterval(delay) * 0.005,
-                                            duration: transitionTime.interval)
+                                            duration: transitionTime.interval ?? 0)
             } else {
                 state = GenericState<Int16>(request.level)
             }
@@ -119,12 +119,12 @@ class GenericLevelServerDelegate: ModelDelegate {
                     // Continue the same transition.
                     state = GenericState<Int16>(continueTransitionFrom: state, to: targetLevel,
                                                 delay: TimeInterval(delay) * 0.005,
-                                                duration: transitionTime.interval)
+                                                duration: transitionTime.interval ?? 0)
                 } else {
                     // Start a new transaction.
                     state = GenericState<Int16>(transitionFrom: state, to: targetLevel,
                                                 delay: TimeInterval(delay) * 0.005,
-                                                duration: transitionTime.interval)
+                                                duration: transitionTime.interval ?? 0)
                 }
             } else {
                 state = GenericState<Int16>(targetLevel)
@@ -146,7 +146,7 @@ class GenericLevelServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Int16>(animateFrom: state, to: request.deltaLevel,
                                             delay: TimeInterval(delay) * 0.005,
-                                            duration: transitionTime.interval)
+                                            duration: transitionTime.interval ?? 0)
             } else {
                 // Generic Default Transition Time is not supported, so the command
                 // shall not initiate any change.
@@ -190,7 +190,7 @@ class GenericLevelServerDelegate: ModelDelegate {
         }
     }
     
-    func model(_ model: Model, didReceiveUnacknowledgedMessage message: MeshMessage,
+    func model(_ model: Model, didReceiveUnacknowledgedMessage message: any UnacknowledgedMeshMessage,
                from source: Address, sentTo destination: MeshAddress) {
         switch message {
         case let request as GenericLevelSetUnacknowledged:
@@ -208,7 +208,7 @@ class GenericLevelServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Int16>(transitionFrom: state, to: request.level,
                                             delay: TimeInterval(delay) * 0.005,
-                                            duration: transitionTime.interval)
+                                            duration: transitionTime.interval ?? 0)
             } else {
                 state = GenericState<Int16>(request.level)
             }
@@ -226,12 +226,12 @@ class GenericLevelServerDelegate: ModelDelegate {
                     // Continue the same transition.
                     state = GenericState<Int16>(continueTransitionFrom: state, to: targetLevel,
                                                 delay: TimeInterval(delay) * 0.005,
-                                                duration: transitionTime.interval)
+                                                duration: transitionTime.interval ?? 0)
                 } else {
                     // Start a new transaction.
                     state = GenericState<Int16>(transitionFrom: state, to: targetLevel,
                                                 delay: TimeInterval(delay) * 0.005,
-                                                duration: transitionTime.interval)
+                                                duration: transitionTime.interval ?? 0)
                 }
             } else {
                 state = GenericState<Int16>(targetLevel)
@@ -253,7 +253,7 @@ class GenericLevelServerDelegate: ModelDelegate {
                let delay = request.delay {
                 state = GenericState<Int16>(animateFrom: state, to: request.deltaLevel,
                                             delay: TimeInterval(delay) * 0.005,
-                                            duration: transitionTime.interval)
+                                            duration: transitionTime.interval ?? 0)
             } else {
                 // Generic Default Transition Time is not supported, so the command
                 // shall not initiate any change.
@@ -265,8 +265,8 @@ class GenericLevelServerDelegate: ModelDelegate {
         }
     }
     
-    func model(_ model: Model, didReceiveResponse response: MeshMessage,
-               toAcknowledgedMessage request: AcknowledgedMeshMessage,
+    func model(_ model: Model, didReceiveResponse response: any MeshResponse,
+               toAcknowledgedMessage request: any AcknowledgedMeshMessage,
                from source: Address) {
         // Not possible.
     }

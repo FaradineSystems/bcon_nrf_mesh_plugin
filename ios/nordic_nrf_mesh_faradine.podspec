@@ -13,11 +13,16 @@ A Flutter plugin to enable mesh network management and communication using Nordi
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'OZEO-DOOZ' => 'contact@dooz-domotique.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  # s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   s.dependency 'nRFMeshProvision'
 
+  s.source_files = ['Classes/**/*', '../IOS-nRF-Mesh-Library/Library/**/*']
+  # 
+
+
   s.platform = :ios, '16.0'
+  s.static_framework = true
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
