@@ -16,8 +16,8 @@ class SendVendorModelMessage extends StatefulWidget {
 
 class _SendVendorModelMessageState extends State<SendVendorModelMessage> {
   late int selectedElementAddress = 3;
-  late int selectedModelId = 5832714;
-  late int companyIdentifier = 89;
+  late int selectedModelId = 0x59000B;
+  late int companyIdentifier = 0x59;
   late int selectedOpCode = 0x03;
   late Uint8List parameters = Uint8List.fromList([0]);
 
@@ -25,7 +25,7 @@ class _SendVendorModelMessageState extends State<SendVendorModelMessage> {
 
   // Controllers for testing purposes:
   final TextEditingController _addressController = TextEditingController(text: "3");
-  final TextEditingController _modelController = TextEditingController(text: "59000A");
+  final TextEditingController _modelController = TextEditingController(text: "59000B");
   final TextEditingController _opCodeController = TextEditingController(text: "03");
   final TextEditingController _parameterController = TextEditingController(text: "");
 
@@ -43,7 +43,11 @@ class _SendVendorModelMessageState extends State<SendVendorModelMessage> {
                 decoration: const InputDecoration(labelText: 'Element Address (dec)'),
                 controller: _addressController,
                 onChanged: (text) {
-                  selectedElementAddress = int.parse(text);
+                  try {
+                    selectedElementAddress = int.parse(text);
+                  } on Exception catch (_) {
+                    // TODO
+                  }
                 },
               ),
               TextField(
@@ -64,7 +68,11 @@ class _SendVendorModelMessageState extends State<SendVendorModelMessage> {
                 ),
                 controller: _opCodeController,
                 onChanged: (text) {
-                  selectedOpCode = int.parse(text, radix: 16);
+                  try {
+                    selectedOpCode = int.parse(text, radix: 16);
+                  } on Exception catch (e) {
+                    // TODO
+                  }
                 },
               ),
               Row(

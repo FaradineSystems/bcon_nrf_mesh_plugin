@@ -142,6 +142,7 @@ abstract class BleManager<E extends BleManagerCallbacks> {
       }
       _connectedDeviceStatusListener!.cancel();
     });
+    _device = discoveredDevice; // Set because on IOS case DeviceConnectionState.connecting does not happen during provisioning
     _connectedDeviceStatusListener = _bleInstance
         .connectToDevice(
           id: discoveredDevice.id,
@@ -152,7 +153,7 @@ abstract class BleManager<E extends BleManagerCallbacks> {
             (ConnectionStateUpdate connectionStateUpdate) {
               switch (connectionStateUpdate.connectionState) {
                 case DeviceConnectionState.connecting:
-                  _device = discoveredDevice;
+                  _device = discoveredDevice; // This doesn't happen on IOS even though _onGlobalStateUpdate catches the connecting event
                   break;
                 case DeviceConnectionState.connected:
                   _negotiateAndInitGatt(shouldCheckDoozCustomService).then((_) async {

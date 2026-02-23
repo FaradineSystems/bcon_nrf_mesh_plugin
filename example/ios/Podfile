@@ -31,9 +31,12 @@ target 'Runner' do
   use_modular_headers!
   #using static library linkage (to be able to use nRFMeshProvision when it is a git submodule of nrf_mesh_plugin)
   use_frameworks! :linkage => :static
+  
   # pod 'nRFMeshProvision', :path => '.symlinks/plugins/nordic_nrf_mesh_faradine/IOS-nRF-Mesh-Library'
-
   pod 'nRFMeshProvision', :git => 'https://github.com/FaradineSystems/IOS-nRF-Mesh-Library-Updated.git', :branch => 'main'
+
+  # Use absolute path to avoid symlink issues
+  # pod 'nRFMeshProvision', :path => '../../IOS-nRF-Mesh-Library'
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end

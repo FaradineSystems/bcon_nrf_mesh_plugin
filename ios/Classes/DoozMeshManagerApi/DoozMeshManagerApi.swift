@@ -662,8 +662,36 @@ private extension DoozMeshManagerApi {
                 }
             }
             break
+
+        case .sendVendorModelMessage(let data):
+            guard let appKey = meshNetworkManager.meshNetwork?.applicationKeys[KeyIndex(data.keyIndex)] else{
+                let error = MeshNetworkError.keyIndexOutOfRange
+                let nsError = error as NSError
+                result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
+                return
+            }
+            
+            // let stepResolution = StepResolution(rawValue: UInt8(data.transitionResolution))!
+            // let transitionTime = TransitionTime(steps: UInt8(data.transitionStep), stepResolution: stepResolution)
+            
+            let message = VendorModelMessage(withOpCode: data.opCode, modelId: data.modelId, companyIdentifier: data.companyIdentifier, myParameters: Data(data.parameters))
+            // let message = VendorModelMessage(parameters: Data(data.parameters))
+            do{
+                
+                _ = try meshNetworkManager.send(
+                    message,
+                    to: MeshAddress(Address(exactly: data.address)!),
+                    using: appKey
+                )
+                
+                result(nil)
+                
+            }catch{
+                let nsError = error as NSError
+                result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
+            }
+            break
         }
-        
     }
     
 }

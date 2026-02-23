@@ -17,8 +17,8 @@ A Flutter plugin to enable mesh network management and communication using Nordi
   s.dependency 'Flutter'
   s.dependency 'nRFMeshProvision'
 
-  s.source_files = ['Classes/**/*', '../IOS-nRF-Mesh-Library/Library/**/*']
-  # 
+  s.source_files = ['Classes/**/*']
+  # , '../IOS-nRF-Mesh-Library/Library/**/*'
 
 
   s.platform = :ios, '16.0'
