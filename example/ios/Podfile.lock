@@ -110,7 +110,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   nRFMeshProvision:
-    :commit: 8f202793851f1c38df5f40e416ddf451b30124b9
+    :commit: 5216ab82d80a94a9e46cd9160a44a4712e801ffa
     :git: https://github.com/FaradineSystems/IOS-nRF-Mesh-Library-Updated.git
 
 SPEC CHECKSUMS:

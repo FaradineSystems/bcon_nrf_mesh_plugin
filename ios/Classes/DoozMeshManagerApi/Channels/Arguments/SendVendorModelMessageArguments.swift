@@ -7,9 +7,9 @@
 
 struct SendVendorModelMessageArguments: BaseFlutterArguments {
     let address: Int
-    let modelId: Int
+    let modelId: UInt32
     let keyIndex: Int
-    let companyIdentifier: Int
+    let companyIdentifier: UInt32
     let opCode: UInt32
     let parameters: [UInt8]
 }

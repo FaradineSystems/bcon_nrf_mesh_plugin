@@ -12,6 +12,7 @@ enum DoozMeshNetworkChannel {
     case highestAllocatableAddress
     case nodes
     case selectedProvisionerUuid
+    case selectedProvisionerAddress
     case addGroupWithName(_ data: AddGroupWithNameArguments)
     case groups
     case removeGroup(_ data: RemoveGroupArguments)
@@ -44,7 +45,9 @@ enum DoozMeshNetworkChannel {
             case "nodes":
                 self = .nodes
             case "selectedProvisionerUuid":
-                self = .selectedProvisionerUuid
+                self = .selectedProvisionerUuid            
+            case "selectedProvisionerAddress":
+                self = .selectedProvisionerAddress
             case "addGroupWithName":
                 self = .addGroupWithName(try AddGroupWithNameArguments(arguments))
             case "groups":

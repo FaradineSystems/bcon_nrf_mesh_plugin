@@ -153,7 +153,7 @@ abstract class BleManager<E extends BleManagerCallbacks> {
             (ConnectionStateUpdate connectionStateUpdate) {
               switch (connectionStateUpdate.connectionState) {
                 case DeviceConnectionState.connecting:
-                  _device = discoveredDevice; // This doesn't happen on IOS even though _onGlobalStateUpdate catches the connecting event
+                  // This doesn't happen on IOS even though _onGlobalStateUpdate catches the connecting event
                   break;
                 case DeviceConnectionState.connected:
                   _negotiateAndInitGatt(shouldCheckDoozCustomService).then((_) async {

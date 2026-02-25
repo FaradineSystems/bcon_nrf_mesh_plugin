@@ -205,6 +205,23 @@ extension DoozMeshManagerApi: MeshNetworkDelegate{
                 EventSinkKeys.message.destination.rawValue : destinationAddress,
             ]
             _sendFlutterMessage(message)
+            
+        case let status as UnknownMessage:
+            if (status.opCode & 0xC00000 > 0) {
+                // Makes sure this is a vendor model message
+                let message: FlutterMessage = [
+                    EventSinkKeys.source.rawValue : source,
+                    EventSinkKeys.message.destination.rawValue : destinationAddress,
+        
+                    EventSinkKeys.eventName.rawValue: MessageEvent.onVendorModelMessageStatus.rawValue,
+                    EventSinkKeys.message.modelIdentifier.rawValue: status.opCode,
+                    EventSinkKeys.message.message.rawValue: status.parameters?.map { $0 } ?? [],      
+                ]
+                _sendFlutterMessage(message)
+            } else {
+                print("Received UnknownMessage that was not a vendor model message")
+            }
+            
         default:
             break
         }

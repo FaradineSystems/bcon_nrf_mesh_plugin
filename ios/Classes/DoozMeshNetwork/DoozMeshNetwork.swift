@@ -123,6 +123,9 @@ private extension DoozMeshNetwork {
         case .selectedProvisionerUuid:
             result(meshNetwork.localProvisioner?.uuid.uuidString)
             break
+        case .selectedProvisionerAddress:
+            result(meshNetwork.localProvisioner?.primaryUnicastAddress)
+            break
             
         case .addGroupWithName(let data):
             if

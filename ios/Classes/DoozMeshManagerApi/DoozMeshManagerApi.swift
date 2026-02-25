@@ -310,16 +310,15 @@ private extension DoozMeshManagerApi {
             }
             break
         case .sendConfigModelAppBind(let data):
-            do{
+            do {
                 let node = meshNetworkManager.meshNetwork?.node(withAddress: Address(exactly: data.nodeId)!)
                 let element = node?.element(withAddress: Address(exactly: data.elementId)!)
                 let model = element?.model(withModelId: UInt32(data.modelId))
                 let appKey = meshNetworkManager.meshNetwork?.applicationKeys[KeyIndex(data.appKeyIndex)]
                 
-                if let _appKey = appKey, let _model = model{
-                    
-                    if let configModelAppBind = ConfigModelAppBind(applicationKey: _appKey, to: _model){
-                        try _ =  meshNetworkManager.send(configModelAppBind, to: node!)
+                if let _appKey = appKey, let _model = model {
+                    if let configModelAppBind = ConfigModelAppBind(applicationKey: _appKey, to: _model) {
+                        try _ = meshNetworkManager.send(configModelAppBind, to: node!)
                         result(nil)
                     }
                 }
@@ -670,9 +669,6 @@ private extension DoozMeshManagerApi {
                 result(FlutterError(code: String(nsError.code), message: nsError.localizedDescription, details: nil))
                 return
             }
-            
-            // let stepResolution = StepResolution(rawValue: UInt8(data.transitionResolution))!
-            // let transitionTime = TransitionTime(steps: UInt8(data.transitionStep), stepResolution: stepResolution)
             
             let message = VendorModelMessage(withOpCode: data.opCode, modelId: data.modelId, companyIdentifier: data.companyIdentifier, myParameters: Data(data.parameters))
             // let message = VendorModelMessage(parameters: Data(data.parameters))

@@ -78,7 +78,7 @@ private extension DoozProvisionedDevice {
                     EventSinkKeys.meshNode.elements.models.rawValue : element.models.enumerated().map({ (index,model) in
                         return [
                             EventSinkKeys.meshNode.elements.model.key.rawValue : index,
-                            EventSinkKeys.meshNode.elements.model.modelId.rawValue : model.modelIdentifier,
+                            EventSinkKeys.meshNode.elements.model.modelId.rawValue : model.modelId,
                             EventSinkKeys.meshNode.elements.model.subscribedAddresses.rawValue : model.subscriptions.map{ sub in
                                 return sub.address.address
                             },
