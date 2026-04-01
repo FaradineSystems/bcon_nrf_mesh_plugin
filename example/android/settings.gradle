@@ -1,40 +1,44 @@
-include ':app'
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }()
 
-def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
-def properties = new Properties()
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
-assert localPropertiesFile.exists()
-localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 
-def flutterSdkPath = properties.getProperty("flutter.sdk")
-assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"
-
-// reuse app_plugin_loader.gradle code to include nested Android-nRF-Mesh-Library without hard-coding the directory path
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    id "com.android.application" version "8.9.1" apply false
+    id "com.android.library" version "8.9.1" apply false
+    id "org.jetbrains.kotlin.android" version "2.1.0" apply false
+}
 
 import groovy.json.JsonSlurper
 
 def flutterProjectRoot = rootProject.projectDir.parentFile
 
-// Note: if this logic is changed, also change the logic in module_plugin_loader.gradle.
 def pluginsFile = new File(flutterProjectRoot, '.flutter-plugins-dependencies')
-if (!pluginsFile.exists()) {
-  return
+if (pluginsFile.exists()) {
+    def object = new JsonSlurper().parseText(pluginsFile.text)
+    object.plugins.android.each { androidPlugin ->
+        if (androidPlugin.name == 'nordic_nrf_mesh_faradine') {
+            println 'should include forked Nordic\'s ADK v3'
+            def meshLibPath = androidPlugin.path.replace('android', '') + 'Android-nRF-Mesh-Library\\mesh\\'
+            println 'meshLibPath = ' + meshLibPath
+            include ':mesh'
+            project(':mesh').projectDir = file(meshLibPath)
+        }
+    }
 }
 
-def object = new JsonSlurper().parseText(pluginsFile.text)
-assert object instanceof Map
-assert object.plugins instanceof Map
-assert object.plugins.android instanceof List
-// Includes the Flutter plugins that support the Android platform.
-object.plugins.android.each { androidPlugin ->
-  assert androidPlugin.name instanceof String
-  assert androidPlugin.path instanceof String
-  if(androidPlugin.name == 'nordic_nrf_mesh_faradine'){
-    println 'should include forked Nordic\'s ADK v3'
-    def meshLibPath = androidPlugin.path.replace('android', '') + 'Android-nRF-Mesh-Library\\mesh\\'
-    println 'meshLibPath = ' + meshLibPath
-    include ':mesh'
-    project(':mesh').projectDir = file(meshLibPath)
-  }
-}
+include ':app'
