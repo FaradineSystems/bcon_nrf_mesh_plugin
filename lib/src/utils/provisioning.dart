@@ -213,7 +213,9 @@ Future<ProvisionedMeshNode> _provisioning(
     if (Platform.isIOS && bleMeshManager.isProvisioningCompleted) {
       // this case is here because the 'PROVISIONING_INVITE' is not on iOS native code (for now?)
       final unicast = await provisionedMeshNode.unicastAddress;
-      await meshManagerApi.sendConfigCompositionDataGet(unicast);
+      await Future.delayed(const Duration(milliseconds: 200));
+      debugPrint("\x1B[33mWaited before sendConfigCompositionDataGet");
+      await meshManagerApi.sendConfigCompositionDataGet(unicast); // Waiting here seemed to let provisioning complete, but cannot connect now
     } else {
       await meshManagerApi.identifyNode(serviceDataUuid);
     }
